@@ -4,7 +4,9 @@ import pickle
 import numpy as np
 from sentence_transformers import SentenceTransformer
 
-# Load model
+# Initialize session state
+if "messages" not in st.session_state:
+    st.session_state.messages = []
 model = SentenceTransformer('all-MiniLM-L6-v2')
 
 # Load data

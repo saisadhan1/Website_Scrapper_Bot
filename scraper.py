@@ -2,63 +2,83 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
+from selenium.common.exceptions import WebDriverException
+from bs4 import BeautifulSoup
 import time
 import pandas as pd
-from bs4 import BeautifulSoup
+from urllib.parse import urlparse, urljoin
+from collections import deque
 
-# LIMIT NUMBER OF PAGES
-MAX_PAGES = int(input("Enter max no of pages to scape:"))
+# ------------------------
+# USER INPUT
+# ------------------------
+MAX_PAGES = int(input("Enter max number of pages to scrape: "))
 
-# Setup Chrome
+# ------------------------
+# CHROME SETUP
+# ------------------------
 options = webdriver.ChromeOptions()
+options.add_argument("--headless=new")        # Headless to prevent crashes
+options.add_argument("--disable-gpu")
+options.add_argument("--no-sandbox")
+options.add_argument("--disable-dev-shm-usage")
 options.add_argument("--start-maximized")
 
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
+# ------------------------
+# VARIABLES
+# ------------------------
 base_url = "https://botpenguin.com/"
 visited = set()
 data = []
+queue = deque([base_url])  # Use queue instead of recursion for stability
 
-def scrape_page(url):
+# ------------------------
+# SCRAPE LOOP
+# ------------------------
+while queue and len(visited) < MAX_PAGES:
+    url = queue.popleft()
+    
+    if url in visited:
+        continue
+
     try:
-        # ✅ STOP condition
-        if url in visited or len(visited) >= MAX_PAGES:
-            return
-
-        visited.add(url)
-
-        print(f"Scraping ({len(visited)}/{MAX_PAGES}):", url)
-
+        print(f"Scraping ({len(visited)+1}/{MAX_PAGES}): {url}")
         driver.get(url)
-        time.sleep(5)
+        time.sleep(3)  # Wait for JS to load
 
         soup = BeautifulSoup(driver.page_source, "html.parser")
 
-        # Extract text
+        # Extract text content
         for tag in soup.find_all(["h1", "h2", "h3", "p", "li"]):
             text = tag.get_text(strip=True)
             if text and len(text) > 40:
                 data.append(text)
 
-        # Extract links
-        links = driver.find_elements(By.TAG_NAME, "a")
+        visited.add(url)
 
+        # Extract links and add to queue
+        links = driver.find_elements(By.TAG_NAME, "a")
         for link in links:
             href = link.get_attribute("href")
+            if href and "botpenguin.com" in urlparse(href).netloc:
+                full_url = urljoin(base_url, href)
+                if full_url not in visited:
+                    queue.append(full_url)
 
-            if href and "botpenguin.com" in href:
-                scrape_page(href)
+    except WebDriverException as e:
+        print("⚠ WebDriver error:", e)
+        # Restart driver if crashed
+        driver.quit()
+        driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+        queue.append(url)  # Retry the current page
 
-    except Exception as e:
-        print("Error:", e)
-
-# Start scraping
-scrape_page(base_url)
-
-# Save data
+# ------------------------
+# SAVE DATA
+# ------------------------
 df = pd.DataFrame(data, columns=["content"])
 df.drop_duplicates(inplace=True)
-
 df.to_csv("data.csv", index=False)
 
 print("✅ Total pages visited:", len(visited))
