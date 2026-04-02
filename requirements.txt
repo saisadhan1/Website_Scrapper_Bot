@@ -1,0 +1,13 @@
+streamlit
+sentence-transformers
+numpy
+faiss-cpu
+beautifulsoup4
+requests
+pandas
+python-dotenv
+tiktoken
+langchain
+openai
+lxml      # optional but recommended for HTML parsing
+urllib3   # optional, usually installed with requests
