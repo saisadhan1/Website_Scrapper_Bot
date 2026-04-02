@@ -71,10 +71,11 @@ streamlit run app.py
 http://localhost:8501
 Chat-based interface
 Ask questions from scraped data
-🌍 Resources
-🔗 Live Demo: https://websitescrapperbot.streamlit.app/
-💻 GitHub Repo: https://github.com/saisadhan1/Website_Scrapper_Bot
-🎥 Demo Video: https://drive.google.com/file/d/1aCc70yZaiFtS7KPi_QFtcLgcYEI0g9m/view
+ Resources 
+• Live demo (public): https://websitescrapperbot.streamlit.app/ 
+• GitHub repo: https://github.com/saisadhan1/Website_Scrapper_Bot 
+• Explanation video: https://drive.google.com/file/d/1aCc70yZa
+iFtS7KPi_QFtcLgcYEI0g9m/view?usp=sharing
 👤 Author
 
 Saisadhan Kodurupaka
