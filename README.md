@@ -76,8 +76,8 @@ Ask questions from scraped data
 Resources 
 • Live demo (public): https://websitescrapperbot.streamlit.app/ 
 • GitHub repo: https://github.com/saisadhan1/Website_Scrapper_Bot 
-• Explanation video: https://drive.google.com/file/d/1aCc70yZa
-iFtS7KPi_QFtcLgcYEI0g9m/view?usp=sharing
+• Explanation video: [https://drive.google.com/file/d/1aCc70yZa
+iFtS7KPi_QFtcLgcYEI0g9m/view?usp=sharing](https://www.loom.com/share/15074d535fa0439b986c53484ad1d483)
 
 👤 Author
 Saisadhan Kodurupaka
